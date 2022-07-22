@@ -85,6 +85,12 @@ function refreshRows( countries ){
     }
 
     
+    if ( tableBody.childElementCount == 0){
+        let row = document.createElement('tr');
+        let noData = row.insertCell()
+        noData.innerText = 'No data to display'
+        tableBody.appendChild(row)
+    }
 
 }
 
