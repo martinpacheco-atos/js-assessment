@@ -89,14 +89,52 @@
         Countries of the world
     </h1>
 
-    <p class="ml-5">Sort (Asc / Desc)</p>
-    <label class="switchBtn ml-5">
-        <input type="checkbox" checked id="sortCountriesToggle">
-        <div class="slide round"></div>
-    </label>
 
-    <input type="button" value="OPEN MODAL" id="openmodal">
 
+    <!-- Sorting -->
+    <div class="flex flex-row mx-5 my-10">
+
+        <p class="mx-5">Sort (Asc / Desc)</p>
+        <label class="switchBtn mx-5">
+            <input type="checkbox" checked id="sortCountriesToggle">
+            <div class="slide round"></div>
+        </label>
+    </div>
+   
+
+    
+
+    <!-- Search -->
+    <div class="flex flex-row mx-5">
+
+    
+
+        <div class="basis-3/6">
+            <label for="searchColumn">Select a column:</label>
+
+            <select name="searchColumn" id="searchColumn" class="bg-zinc-200">
+                <option value="name">Official Name</option>
+                <option value="capital">Capital</option>
+                <option value="region">Region</option>
+                <option value="language">Language</option>
+            </select>
+        </div>
+
+        <div class="basis-3/6">
+
+            <label for="searchTerm">Search term</label>
+            <input type="text" name="searchTerm" id="searchTerm" class="bg-zinc-200">
+        </div>
+
+    
+        
+
+    </div>
+
+
+
+
+    <!-- Data -->
     <table id="countries" class="m-5">
         <thead>
             <tr class="bg-orange-200">
@@ -114,7 +152,7 @@
 
     </table>
 
-
+    <div id="pagination"></div>
 
     <!-- Scripts -->
     <script src="https://cdn.tailwindcss.com"></script>

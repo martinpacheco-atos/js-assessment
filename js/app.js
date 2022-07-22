@@ -19,60 +19,73 @@ async function getAllCountries(){
         ct.language  = country.languages ? Object.values(country.languages).toString() : 'No language to display'
         ct.population = country.population
         ct.flag = country.flags.png
+        ct.visible = true
+
         countries.push(ct)
     }
 
     countries = countries.sort(sortArrayAscending)
     
-    appendRows( countries )
-  
+    refreshRows( countries )
+
 }
 
-function appendRows( countries ){
+function refreshRows( countries ){
 
+
+
+    // Clear rows
     const tableBody = document.getElementById('rows');
+    tableBody.innerText = '';
+
     
     for(const country of countries){
 
-        let row = document.createElement('tr');;
-        row.classList.add('even:bg-zinc-200')
-        
-        let officialName = row.insertCell()
-        officialName.innerText = country.name;
-        officialName.dataset.country = country.name
+        if( country.visible ){
 
-        let capital = row.insertCell()
-        capital.innerText = country.capital
-        capital.dataset.country = country.name
+            let row = document.createElement('tr');
+            row.classList.add('even:bg-zinc-200')
+            
+            let officialName = row.insertCell()
+            officialName.innerText = country.name;
+            officialName.dataset.country = country.name
+    
+            let capital = row.insertCell()
+            capital.innerText = country.capital
+            capital.dataset.country = country.name
+    
+            let region = row.insertCell()
+            region.innerText = country.region
+            region.dataset.country = country.name
+    
+            let language = row.insertCell()
+            language.innerText = country.language
+            language.dataset.country = country.name
+    
+            let population = row.insertCell()
+            population.innerText = country.population
+            population.dataset.country = country.name
+    
+            let flag = row.insertCell()
+    
+            let img = document.createElement("img");
+            img.src = country.flag
+            img.style.minWidth = "100px";
+            img.dataset.country = country.name
+            flag.appendChild(img) 
+            flag.dataset.country = country.name
+    
+    
+            row.dataset.country = country.name
+            row.addEventListener('click', openModal)
+    
+            tableBody.appendChild(row)
 
-        let region = row.insertCell()
-        region.innerText = country.region
-        region.dataset.country = country.name
-
-        let language = row.insertCell()
-        language.innerText = country.language
-        language.dataset.country = country.name
-
-        let population = row.insertCell()
-        population.innerText = country.population
-        population.dataset.country = country.name
-
-        let flag = row.insertCell()
-
-        let img = document.createElement("img");
-        img.src = country.flag
-        img.style.minWidth = "100px";
-        img.dataset.country = country.name
-        flag.appendChild(img) 
-        flag.dataset.country = country.name
-
-
-        row.dataset.country = country.name
-        row.addEventListener('click', openModal)
-
-        tableBody.appendChild(row)
-       
+        }       
     }
+
+    
+
 }
 
 
@@ -91,8 +104,6 @@ function sortArrayDescending(x, y){
 
 function sortCountries(){
 
-    const tableBody = document.getElementById('rows');
-    
 
     console.log('toggle clicked')
     
@@ -105,9 +116,7 @@ function sortCountries(){
         isAscending = true
     }
   
-    tableBody.innerText = '';
-
-    appendRows( countries )
+    refreshRows( countries )
     
 
 }
@@ -140,15 +149,36 @@ async function openModal( event ){
 }
 
 
+function search(event){
+
+    let term = event.target.value
+    let column = document.getElementById('searchColumn').value
+
+    console.log('searching for: ' + term + ' in column ' + column)
+    
+    
+    for(let country of countries){
+        
+        //console.log( 'the term ' + term + ' includes in ' + country[column].toLowerCase() )
+        //console.log( country[column].toLowerCase().includes( term.toLowerCase() ) )
+    
+        country.visible = country[column].toLowerCase().includes( term.toLowerCase() )
+    
+    }
+
+    refreshRows( countries )
+
+}
+
+
 getAllCountries()
 
 let toggle = document.getElementById('sortCountriesToggle')
 toggle.addEventListener('click', sortCountries)
 
 
-
-let openModalbutton = document.getElementById('openmodal')
-openModalbutton.addEventListener('click', openModal)
+let searchTerm = document.getElementById('searchTerm') 
+searchTerm.addEventListener('input', search)
 
 
 
