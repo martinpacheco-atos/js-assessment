@@ -3,6 +3,7 @@
 let countries = [];
 let isAscending = true;
 
+
 async function getAllCountries(){
 
 
@@ -27,7 +28,7 @@ async function getAllCountries(){
   
 }
 
-function appendRows(countries ){
+function appendRows( countries ){
 
     const tableBody = document.getElementById('rows');
     
@@ -38,26 +39,36 @@ function appendRows(countries ){
         
         let officialName = row.insertCell()
         officialName.innerText = country.name;
-        
+        officialName.dataset.country = country.name
+
         let capital = row.insertCell()
         capital.innerText = country.capital
-        
+        capital.dataset.country = country.name
+
         let region = row.insertCell()
         region.innerText = country.region
-       
+        region.dataset.country = country.name
 
         let language = row.insertCell()
         language.innerText = country.language
-        
+        language.dataset.country = country.name
+
         let population = row.insertCell()
         population.innerText = country.population
-        
+        population.dataset.country = country.name
+
         let flag = row.insertCell()
 
         let img = document.createElement("img");
         img.src = country.flag
         img.style.minWidth = "100px";
+        img.dataset.country = country.name
         flag.appendChild(img) 
+        flag.dataset.country = country.name
+
+
+        row.dataset.country = country.name
+        row.addEventListener('click', openModal)
 
         tableBody.appendChild(row)
        
@@ -102,11 +113,42 @@ function sortCountries(){
 }
 
 
+async function openModal( event ){
+    
+    console.log(event.target.dataset.country)
+    let countryName = event.target.dataset.country
+
+    const response = await fetch('https://en.wikipedia.org/api/rest_v1/page/summary/' + countryName)
+    const country = await response.json()
+
+    var modal = new tingle.modal({
+        footer: true,
+        stickyFooter: false,
+        closeMethods: ['overlay', 'button', 'escape'],
+        closeLabel: "Close",
+        cssClass: ['custom-class-1', 'custom-class-2'],
+        onOpen: function() {},
+        onClose: function() {},
+        beforeClose: function() {
+            return true;
+        }
+    });
+
+    modal.setContent(country.extract_html);
+
+    modal.open();
+}
+
 
 getAllCountries()
 
 let toggle = document.getElementById('sortCountriesToggle')
 toggle.addEventListener('click', sortCountries)
+
+
+
+let openModalbutton = document.getElementById('openmodal')
+openModalbutton.addEventListener('click', openModal)
 
 
 
