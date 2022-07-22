@@ -162,15 +162,41 @@ function search(event){
 
     console.log('searching for: ' + term + ' in column ' + column)
     
+
     
     for(let country of countries){
         
         //console.log( 'the term ' + term + ' includes in ' + country[column].toLowerCase() )
         //console.log( country[column].toLowerCase().includes( term.toLowerCase() ) )
-    
-        country.visible = country[column].toLowerCase().includes( term.toLowerCase() )
+        if( column == 'all'){
+            
+            for(let key in country){
+
+                console.log(key)
+                
+                if( key == 'name' || key == 'capital' || key == 'region' || key == 'language' ){
+                    
+                    country.visible = country[key].toLowerCase().includes( term.toLowerCase() )
+                    
+                    //console.log( ' country[key]' + country[key] )
+                    
+                    if(country[key].toLowerCase().includes( term.toLowerCase() )){
+                        break;
+                    }
+                }
+            
+            }
+
+        } else {
+
+            country.visible = country[column].toLowerCase().includes( term.toLowerCase() )
+
+        }
     
     }
+
+
+
 
     refreshRows( countries )
 
