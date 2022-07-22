@@ -158,45 +158,53 @@ async function openModal( event ){
 function search(event){
 
     let term = event.target.value
-    let column = document.getElementById('searchColumn').value
 
-    console.log('searching for: ' + term + ' in column ' + column)
-    
+    if(term.length > 3 ){
 
-    
-    for(let country of countries){
         
-        //console.log( 'the term ' + term + ' includes in ' + country[column].toLowerCase() )
-        //console.log( country[column].toLowerCase().includes( term.toLowerCase() ) )
-        if( column == 'all'){
-            
-            for(let key in country){
+        let column = document.getElementById('searchColumn').value
 
-                console.log(key)
+        console.log('searching for: ' + term + ' in column ' + column)
+        
+        
+        for(let country of countries){
+            
+            //console.log( 'the term ' + term + ' includes in ' + country[column].toLowerCase() )
+            //console.log( country[column].toLowerCase().includes( term.toLowerCase() ) )
+            if( column == 'all'){
                 
-                if( key == 'name' || key == 'capital' || key == 'region' || key == 'language' ){
+                for(let key in country){
+
+                    console.log(key)
                     
-                    country.visible = country[key].toLowerCase().includes( term.toLowerCase() )
-                    
-                    //console.log( ' country[key]' + country[key] )
-                    
-                    if(country[key].toLowerCase().includes( term.toLowerCase() )){
-                        break;
+                    if( key == 'name' || key == 'capital' || key == 'region' || key == 'language' ){
+                        
+                        country.visible = country[key].toLowerCase().includes( term.toLowerCase() )
+                        
+                        //console.log( ' country[key]' + country[key] )
+                        
+                        if(country[key].toLowerCase().includes( term.toLowerCase() )){
+                            break;
+                        }
                     }
+                
                 }
-            
+
+            } else {
+
+                country.visible = country[column].toLowerCase().includes( term.toLowerCase() )
+
             }
+        
+        } 
 
-        } else {
 
-            country.visible = country[column].toLowerCase().includes( term.toLowerCase() )
+    } else {
 
+        for(let country of countries){
+            country.visible = true
         }
-    
     }
-
-
-
 
     refreshRows( countries )
 
