@@ -4,6 +4,111 @@ let countries = [];
 let isAscending = true;
 
 
+let itemsPerPage = 10
+let totalPages = 0
+
+let pagination = {
+    offset : 0,
+    limit : 9,
+    selectedPage : 1
+}
+
+
+function createPages() {
+    
+    let container = document.getElementById('pagination')
+
+    totalPages =  countries.length / itemsPerPage
+
+    
+    for(let x = 0; x < totalPages; x++){
+
+
+        if( ( x >= 0 && x <= 3 ) || ( x >= totalPages - 4 ) ){
+
+
+                
+            let page = document.createElement('a')
+
+            
+            page.classList.add('bg-white')
+            page.classList.add('border-gray-300')
+            page.classList.add('text-gray-500')
+            page.classList.add('hover:bg-gray-50')
+            page.classList.add('relative')
+            page.classList.add('inline-flex')
+            page.classList.add('items-center')
+            page.classList.add('px-4')
+            page.classList.add('py-2')
+            page.classList.add('border')
+            page.classList.add('text-sm')
+            page.classList.add('font-medium')
+            page.href='#'
+            page.dataset.page = x+1
+
+            if ( x == 3 ) {
+                page.classList.add('mr-5')
+            }
+
+            if ( x == totalPages - 4){
+                page.classList.add('ml-5')
+            }
+
+            page.innerText = x + 1
+            page.addEventListener('click', handleClickFromPage )
+            container.appendChild(page)
+        } 
+
+        // Add middle buttons
+        
+
+
+    }
+
+}
+
+
+
+
+
+function handleClickFromPage(event) {
+    
+    let page = event.target.dataset.page
+
+    pagination.offset = (page - 1) * itemsPerPage
+    pagination.limit = pagination.offset + itemsPerPage - 1
+    pagination.selectedPage = page 
+    console.log('page clicked: ' + page + ', offset: ' + pagination.offset + ', limit:' + pagination.limit)
+
+
+    let container = document.getElementById('pagination')
+
+
+
+    for (let x = 0; x < container.childNodes.length; x++) {
+        console.log(container.childNodes[x]);
+        container.childNodes[x].classList.remove('bg-sky-300')
+        container.childNodes[x].classList.remove('bg-white')
+        if( page == container.childNodes[x].dataset.page){
+            console.log('adding class');
+            container.childNodes[x].classList.add('bg-sky-300')
+        }
+    }
+
+    refreshRows( countries )
+
+
+
+    
+
+
+
+}
+
+
+
+
+
 async function getAllCountries(){
 
 
@@ -28,60 +133,74 @@ async function getAllCountries(){
     
     refreshRows( countries )
 
+    createPages()
+
 }
 
 function refreshRows( countries ){
 
+    console.log('offset: ' + pagination.offset + ', limit:' + pagination.limit)
 
 
     // Clear rows
     const tableBody = document.getElementById('rows');
     tableBody.innerText = '';
 
-    
+    let counter = 0
+
     for(const country of countries){
 
-        if( country.visible ){
+        if( counter >= pagination.offset && counter <= pagination.limit ){
+            //console.log( counter >= pagination.offset  )
+            //console.log( counter <= pagination.limit  )
 
-            let row = document.createElement('tr');
-            row.classList.add('even:bg-zinc-200')
+
+            if( country.visible ){
+
+                let row = document.createElement('tr');
+                row.classList.add('even:bg-zinc-200')
+                
+                let officialName = row.insertCell()
+                officialName.innerText = country.name;
+                officialName.dataset.country = country.name
+        
+                let capital = row.insertCell()
+                capital.innerText = country.capital
+                capital.dataset.country = country.name
+        
+                let region = row.insertCell()
+                region.innerText = country.region
+                region.dataset.country = country.name
+        
+                let language = row.insertCell()
+                language.innerText = country.language
+                language.dataset.country = country.name
+        
+                let population = row.insertCell()
+                population.innerText = country.population
+                population.dataset.country = country.name
+        
+                let flag = row.insertCell()
+        
+                let img = document.createElement("img");
+                img.src = country.flag
+                img.style.minWidth = "100px";
+                img.dataset.country = country.name
+                flag.appendChild(img) 
+                flag.dataset.country = country.name
+        
+        
+                row.dataset.country = country.name
+                row.addEventListener('click', openModal)
+        
+                tableBody.appendChild(row)
+    
+            }  
+
+        }
+
+        counter++
             
-            let officialName = row.insertCell()
-            officialName.innerText = country.name;
-            officialName.dataset.country = country.name
-    
-            let capital = row.insertCell()
-            capital.innerText = country.capital
-            capital.dataset.country = country.name
-    
-            let region = row.insertCell()
-            region.innerText = country.region
-            region.dataset.country = country.name
-    
-            let language = row.insertCell()
-            language.innerText = country.language
-            language.dataset.country = country.name
-    
-            let population = row.insertCell()
-            population.innerText = country.population
-            population.dataset.country = country.name
-    
-            let flag = row.insertCell()
-    
-            let img = document.createElement("img");
-            img.src = country.flag
-            img.style.minWidth = "100px";
-            img.dataset.country = country.name
-            flag.appendChild(img) 
-            flag.dataset.country = country.name
-    
-    
-            row.dataset.country = country.name
-            row.addEventListener('click', openModal)
-    
-            tableBody.appendChild(row)
-
-        }       
     }
 
     
@@ -91,6 +210,9 @@ function refreshRows( countries ){
         noData.innerText = 'No data to display'
         tableBody.appendChild(row)
     }
+
+
+    
 
 }
 
